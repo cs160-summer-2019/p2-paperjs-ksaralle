@@ -10,6 +10,18 @@
 	<script type="text/javascript" src="{% static 'coloring/vendors/paper/paper-full.min.js' %}"></script>
 
 	<style type="text/css">
+    #rect-angle {
+      background-color: #ff0000;
+      top:0;
+      height: 50px;
+      width: 100px;
+      display: block;
+      margin-left: 650px;
+      margin-top: 360px;
+      position: absolute;
+      
+    }
+    
 		#color-palette {
 			width: 300px;
 			background-color: #f1f1f1;
@@ -38,7 +50,10 @@
 	</style>
 
 	<script type="text/javascript" canvas="canvas">
+   
 		window.onload = function() {
+      
+      
 			var canvas = document.getElementById('myCanvas');
 
 			// coloring page
@@ -54,19 +69,55 @@
 				options: [],
 				$container: $('#color-palette')
 			}
+      
+      
 
 			// your rectangle gradient interaction goes in this function
 			// you may also add code outside of the function (e.g., global variables)
 			function myGradientInteraction(){
+        
 				var tool = new paper.Tool();
+        /* var rect = document.getElementById('rect-angle'); */
+        var rect = new paper.Rectangle(280, 330, 160, 80);
+        var path = new paper.Path.Rectangle(rect);
+        path.fillColor = "#ff0000";
+        var start;
+        var end;
 
 				tool.onMouseDown = function (event) {
-
+          start = event.point;
 				}
 
 				tool.onMouseUp = function (event) {
-					
-				}
+          end = event.point;
+        
+          console.log("how many colors selected:"+cp.history.length);
+          console.log("last second:"+cp.history[cp.history.length - 2]);
+          console.log("last one:"+cp.history[cp.history.length - 1]);
+        var color1 = cp.history[cp.history.length - 1];
+        var color2 = cp.history[cp.history.length - 2];
+          
+        path.fillColor = {
+           gradient: {
+             
+                    stops: [color2, color1]
+                },
+                origin: start,
+                destination: end
+        }
+         /*
+				path = new paper.Path.Rectangle({
+           fillColor: {
+                gradient: {
+                    stops: ['cp.history[cp.history.length - 1]', 'cp.history[cp.history.length - 2]']
+                },
+                origin: start,
+                destination: end
+            }
+         });
+          */
+          /* 'cp.history[cp.history.length - 1]' */
+          };
 			}
 
 			// your custom interaction goes here!
@@ -93,6 +144,7 @@
 					$swatch.click(function(){
 						// add color to the color palette history
 					  	cp.history.push($(this).css("background-color"));
+              console.log("a new color being selected.");
 					});
 					cp.$container.append($swatch);
 				}
@@ -100,6 +152,7 @@
 
 			// loads a set of colors from a json to create a color palette
 			function getColorsCreatePalette(){
+        console.log("hey!");
 				cp.$container.html(" ");
 				$.getJSON('/static/coloring/vendors/material/material-colors.json', function(colors){
 					var keys = Object.keys(colors);
@@ -141,8 +194,18 @@
 	</script>
 </head>
 <body>	
-
+  
+   
 	<canvas id="myCanvas" width="750px" height="750px"></canvas>
+  
 	<div id="color-palette"></div>
+  
+ <!--  <div id="rect-angle"><div> -->
+  
+  
+  
+  
+
+  
 </body>
 </html>
